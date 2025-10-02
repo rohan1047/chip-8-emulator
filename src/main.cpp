@@ -11,12 +11,12 @@ bool soundPlaying = false;
 
 void audioCallback(void* userdata, Uint8* stream, int len) {
     static int amplitude = 28000;
-    static int frequency = 440; // A4 note
+    static int frequency = 440;
     static int sampleRate = 44100;
     static double phase = 0.0;
 
     Sint16* buffer = (Sint16*)stream;
-    int length = len / 2;  // Sint16 is 2 bytes
+    int length = len / 2;
 
     for (int i = 0; i < length; i++) {
         buffer[i] = (Sint16)(amplitude * sin(phase));
@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
         std::cerr << "Failed to open audio: " << SDL_GetError() << std::endl;
     }
 
-    SDL_PauseAudioDevice(dev, 1); // Pause audio initially
+    SDL_PauseAudioDevice(dev, 1);
 
     SDL_Window* window = SDL_CreateWindow("CHIP-8 Emulator",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
@@ -79,8 +79,8 @@ int main(int argc, char* argv[]) {
                     case SDLK_2: chip8.key[0x2] = value; break;
                     case SDLK_3: chip8.key[0x3] = value; break;
                     case SDLK_4: chip8.key[0xC] = value; break;
-                    case SDLK_q: chip8.key[0x4] = value; break;  // Paddle up
-                    case SDLK_a: chip8.key[0x7] = value; break;  // Paddle down
+                    case SDLK_q: chip8.key[0x4] = value; break;
+                    case SDLK_a: chip8.key[0x7] = value; break;
                     case SDLK_w: chip8.key[0x5] = value; break;
                     case SDLK_e: chip8.key[0x6] = value; break;
                     case SDLK_r: chip8.key[0xD] = value; break;
@@ -91,7 +91,7 @@ int main(int argc, char* argv[]) {
                     case SDLK_x: chip8.key[0x0] = value; break;
                     case SDLK_c: chip8.key[0xB] = value; break;
                     case SDLK_v: chip8.key[0xF] = value; break;
-                    case SDLK_ESCAPE: running = false; break;  // Exit on ESC
+                    case SDLK_ESCAPE: running = false; break;
                     default: break;
                 }
             }
@@ -117,22 +117,19 @@ int main(int argc, char* argv[]) {
 
             SDL_RenderPresent(renderer);
         }
-
-        // Play beep if sound_timer > 0; else silence
         if (chip8.sound_timer > 0) {
             if (!soundPlaying) {
-                SDL_PauseAudioDevice(dev, 0); // Unpause to play sound
+                SDL_PauseAudioDevice(dev, 0);
                 soundPlaying = true;
             }
         }
         else {
             if (soundPlaying) {
-                SDL_PauseAudioDevice(dev, 1); // Pause to silence
+                SDL_PauseAudioDevice(dev, 1);
                 soundPlaying = false;
             }
         }
-
-        SDL_Delay(16);  // ~60 FPS for smooth animation
+        SDL_Delay(16);
     }
 
     SDL_CloseAudioDevice(dev);
